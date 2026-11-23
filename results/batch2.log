@@ -1,0 +1,4 @@
+attn-softmax_learned_temp attn=softmax_learned_temp seed=2 exit=0 RESULT {"name": "attn-softmax_learned_temp", "params": 13227684, "val_loss": 3.1591721749305726, "bpb": 1.2809
+muon-relu2 opt=muon act=relu2 seed=0 exit=0 RESULT {"name": "muon-relu2", "params": 13375104, "val_loss": 2.721341745853424, "bpb": 1.1034209561472612, "s
+muon-relu2 opt=muon act=relu2 seed=1 exit=0 RESULT {"name": "muon-relu2", "params": 13375104, "val_loss": 2.7232449054718018, "bpb": 1.1041926292416129, "
+muon-relu2 opt=muon act=relu2 seed=2 exit=0 RESULT {"name": "muon-relu2", "params": 13375104, "val_loss": 2.7245219016075133, "bpb": 1.104710412169542, "s

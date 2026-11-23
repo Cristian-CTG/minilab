@@ -1,0 +1,7 @@
+act-relu2 step 250 val 4.7545 bpb 1.9278 76s
+act-relu2 step 500 val 3.9438 bpb 1.5991 153s
+act-relu2 step 750 val 3.4855 bpb 1.4133 229s
+act-relu2 step 1000 val 3.2386 bpb 1.3132 305s
+act-relu2 step 1250 val 3.0866 bpb 1.2515 381s
+act-relu2 step 1500 val 3.0127 bpb 1.2216 456s
+RESULT {"name": "act-relu2", "params": 13375104, "val_loss": 3.016335813999176, "bpb": 1.2230320403586186, "secs": 461, "peak_gb": 2.49, "tok_per_s": 53328}

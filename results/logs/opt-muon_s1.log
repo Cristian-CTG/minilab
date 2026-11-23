@@ -1,0 +1,7 @@
+opt-muon step 250 val 4.0592 bpb 1.6459 77s
+opt-muon step 500 val 3.3816 bpb 1.3711 158s
+opt-muon step 750 val 3.1202 bpb 1.2651 238s
+opt-muon step 1000 val 2.9324 bpb 1.1890 313s
+opt-muon step 1250 val 2.7894 bpb 1.1310 388s
+opt-muon step 1500 val 2.7097 bpb 1.0987 463s
+RESULT {"name": "opt-muon", "params": 13227648, "val_loss": 2.712504012584686, "bpb": 1.0998375252501957, "secs": 467, "peak_gb": 2.19, "tok_per_s": 52654}

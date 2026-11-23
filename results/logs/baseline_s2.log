@@ -1,0 +1,7 @@
+baseline step 250 val 5.2438 bpb 2.1262 70s
+baseline step 500 val 4.2602 bpb 1.7274 141s
+baseline step 750 val 3.7716 bpb 1.5293 214s
+baseline step 1000 val 3.4555 bpb 1.4011 288s
+baseline step 1250 val 3.2683 bpb 1.3252 360s
+baseline step 1500 val 3.1851 bpb 1.2914 431s
+RESULT {"name": "baseline", "params": 13227648, "val_loss": 3.188966112136841, "bpb": 1.293028353361678, "secs": 435, "peak_gb": 2.23, "tok_per_s": 56432}

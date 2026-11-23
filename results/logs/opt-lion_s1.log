@@ -1,0 +1,7 @@
+opt-lion step 250 val 6.5429 bpb 2.6529 65s
+opt-lion step 500 val 5.8744 bpb 2.3819 133s
+opt-lion step 750 val 5.4295 bpb 2.2015 203s
+opt-lion step 1000 val 5.0727 bpb 2.0568 275s
+opt-lion step 1250 val 4.8529 bpb 1.9677 347s
+opt-lion step 1500 val 4.7429 bpb 1.9231 419s
+RESULT {"name": "opt-lion", "params": 13227648, "val_loss": 4.748538045883179, "bpb": 1.9253871362807806, "secs": 423, "peak_gb": 2.18, "tok_per_s": 58116}

@@ -1,0 +1,23 @@
+RESULT {"name": "baseline", "params": 13227648, "val_loss": 3.106085171699524, "bpb": 1.2594226635643284, "secs": 503, "peak_gb": 2.23, "tok_per_s": 48865}
+RESULT {"name": "attn-sigmoid", "params": 13227648, "val_loss": 3.189350678920746, "bpb": 1.2931842834461835, "secs": 736, "peak_gb": 3.14, "tok_per_s": 33380}
+RESULT {"name": "attn-softmax_learned_temp", "params": 13227684, "val_loss": 3.0942732858657838, "bpb": 1.2546333046459097, "secs": 897, "peak_gb": 3.74, "tok_per_s": 27407}
+RESULT {"name": "qk_norm-false", "params": 13226880, "val_loss": 3.190168421268463, "bpb": 1.2935158529907198, "secs": 400, "peak_gb": 1.98, "tok_per_s": 61475}
+RESULT {"name": "norm-dyt", "params": 13232653, "val_loss": 7.226135025024414, "bpb": 2.929977034567975, "secs": 425, "peak_gb": 2.24, "tok_per_s": 57807}
+RESULT {"name": "act-geglu", "params": 13227648, "val_loss": 3.136288416385651, "bpb": 1.2716691567440608, "secs": 445, "peak_gb": 2.23, "tok_per_s": 55237}
+RESULT {"name": "act-relu2", "params": 13375104, "val_loss": 3.0166023445129393, "bpb": 1.2231401103409303, "secs": 518, "peak_gb": 2.49, "tok_per_s": 47451}
+RESULT {"name": "pos-nope", "params": 13227648, "val_loss": 3.784699566364288, "bpb": 1.5345800727200325, "secs": 406, "peak_gb": 2.23, "tok_per_s": 60598}
+RESULT {"name": "opt-lion", "params": 13227648, "val_loss": 4.654751076698303, "bpb": 1.8873593849445824, "secs": 451, "peak_gb": 2.18, "tok_per_s": 54500}
+RESULT {"name": "opt-muon", "params": 13227648, "val_loss": 2.72167857170105, "bpb": 1.1035575287403243, "secs": 536, "peak_gb": 2.19, "tok_per_s": 45853}
+RESULT {"name": "baseline", "params": 13227648, "val_loss": 3.1181512570381162, "bpb": 1.2643150926175888, "secs": 520, "peak_gb": 2.23, "tok_per_s": 47225}
+RESULT {"name": "attn-sigmoid", "params": 13227648, "val_loss": 3.125473380088806, "bpb": 1.267283989864666, "secs": 765, "peak_gb": 3.14, "tok_per_s": 32118}
+RESULT {"name": "qk_norm-false", "params": 13226880, "val_loss": 3.209063997268677, "bpb": 1.3011774319044591, "secs": 395, "peak_gb": 1.98, "tok_per_s": 62268}
+RESULT {"name": "act-geglu", "params": 13227648, "val_loss": 3.065797381401062, "bpb": 1.2430871951653573, "secs": 570, "peak_gb": 2.23, "tok_per_s": 43095}
+RESULT {"name": "pos-nope", "params": 13227648, "val_loss": 3.793184940814972, "bpb": 1.5380206328789714, "secs": 459, "peak_gb": 2.23, "tok_per_s": 53506}
+RESULT {"name": "qk_norm-false", "params": 13226880, "val_loss": 3.3109817624092104, "bpb": 1.3425019726502567, "secs": 471, "peak_gb": 1.98, "tok_per_s": 52191}
+RESULT {"name": "norm-dyt", "params": 13232653, "val_loss": 7.226262354850769, "bpb": 2.930028662923347, "secs": 416, "peak_gb": 2.24, "tok_per_s": 59012}
+RESULT {"name": "act-geglu", "params": 13227648, "val_loss": 3.171503918170929, "bpb": 1.28594796708103, "secs": 455, "peak_gb": 2.23, "tok_per_s": 54027}
+RESULT {"name": "act-relu2", "params": 13375104, "val_loss": 3.0222906374931338, "bpb": 1.225446539398808, "secs": 516, "peak_gb": 2.49, "tok_per_s": 47645}
+RESULT {"name": "pos-nope", "params": 13227648, "val_loss": 3.8485430788993837, "bpb": 1.5604666669901623, "secs": 379, "peak_gb": 2.23, "tok_per_s": 64790}
+RESULT {"name": "opt-lion", "params": 13227648, "val_loss": 4.620005369186401, "bpb": 1.8732710618358757, "secs": 403, "peak_gb": 2.18, "tok_per_s": 60966}
+RESULT {"name": "opt-muon", "params": 13227648, "val_loss": 2.721325578689575, "bpb": 1.103414400856137, "secs": 418, "peak_gb": 2.19, "tok_per_s": 58795}
+BATCH1_DONE

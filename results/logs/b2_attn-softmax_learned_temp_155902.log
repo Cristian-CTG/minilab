@@ -1,0 +1,7 @@
+attn-softmax_learned_temp step 250 val 5.3757 bpb 2.1797 147s
+attn-softmax_learned_temp step 500 val 4.3111 bpb 1.7480 291s
+attn-softmax_learned_temp step 750 val 3.7808 bpb 1.5330 438s
+attn-softmax_learned_temp step 1000 val 3.4373 bpb 1.3937 585s
+attn-softmax_learned_temp step 1250 val 3.2446 bpb 1.3156 736s
+attn-softmax_learned_temp step 1500 val 3.1559 bpb 1.2796 884s
+RESULT {"name": "attn-softmax_learned_temp", "params": 13227684, "val_loss": 3.1591721749305726, "bpb": 1.2809478218629697, "secs": 894, "peak_gb": 3.74, "tok_per_s": 27490}

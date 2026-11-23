@@ -1,0 +1,8 @@
+attn-softmax_learned_temp s1 exit=0 RESULT {"name": "attn-softmax_learned_temp", "params": 13227684, "val_loss": 3.1030522990226745, "bpb": 1.25819292633119
+norm-dyt s1 exit=0 RESULT {"name": "norm-dyt", "params": 13232653, "val_loss": 7.226192708015442, "bpb": 2.9300004232589436, "secs": 354, "
+act-relu2 s1 exit=0 RESULT {"name": "act-relu2", "params": 13375104, "val_loss": 3.016335813999176, "bpb": 1.2230320403586186, "secs": 461, 
+opt-lion s1 exit=0 RESULT {"name": "opt-lion", "params": 13227648, "val_loss": 4.748538045883179, "bpb": 1.9253871362807806, "secs": 423, "
+opt-muon s1 exit=0 RESULT {"name": "opt-muon", "params": 13227648, "val_loss": 2.712504012584686, "bpb": 1.0998375252501957, "secs": 467, "
+baseline s2 exit=0 RESULT {"name": "baseline", "params": 13227648, "val_loss": 3.188966112136841, "bpb": 1.293028353361678, "secs": 435, "p
+attn-sigmoid s2 exit=0 RESULT {"name": "attn-sigmoid", "params": 13227648, "val_loss": 3.0012997913360597, "bpb": 1.2169353924352666, "secs": 7
+attn-softmax_learned_temp s2 exit=127 

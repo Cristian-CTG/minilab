@@ -1,0 +1,7 @@
+attn-sigmoid step 250 val 4.7792 bpb 1.9378 120s
+attn-sigmoid step 500 val 3.8863 bpb 1.5758 238s
+attn-sigmoid step 750 val 3.5077 bpb 1.4223 357s
+attn-sigmoid step 1000 val 3.2532 bpb 1.3191 477s
+attn-sigmoid step 1250 val 3.0821 bpb 1.2497 596s
+attn-sigmoid step 1500 val 2.9998 bpb 1.2163 715s
+RESULT {"name": "attn-sigmoid", "params": 13227648, "val_loss": 3.0012997913360597, "bpb": 1.2169353924352666, "secs": 725, "peak_gb": 3.14, "tok_per_s": 33909}

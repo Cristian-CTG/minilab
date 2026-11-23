@@ -1,0 +1,7 @@
+norm-dyt step 250 val 7.2538 bpb 2.9412 59s
+norm-dyt step 500 val 7.2277 bpb 2.9306 117s
+norm-dyt step 750 val 7.2201 bpb 2.9275 175s
+norm-dyt step 1000 val 7.2160 bpb 2.9259 234s
+norm-dyt step 1250 val 7.2174 bpb 2.9264 292s
+norm-dyt step 1500 val 7.2168 bpb 2.9262 350s
+RESULT {"name": "norm-dyt", "params": 13232653, "val_loss": 7.226192708015442, "bpb": 2.9300004232589436, "secs": 354, "peak_gb": 2.24, "tok_per_s": 69411}
