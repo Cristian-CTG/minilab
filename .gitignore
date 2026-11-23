@@ -1,0 +1,5 @@
+.venv/
+data/
+minimind/
+__pycache__/
+*.pt
