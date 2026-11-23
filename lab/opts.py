@@ -52,6 +52,8 @@ class Combo:
     def __init__(s, opts): s.opts = opts; s.param_groups = [g for o in opts for g in o.param_groups]
     def step(s): [o.step() for o in s.opts]
     def zero_grad(s, set_to_none=True): [o.zero_grad(set_to_none=set_to_none) for o in s.opts]
+    def state_dict(s): return [o.state_dict() for o in s.opts]
+    def load_state_dict(s, sd): [o.load_state_dict(x) for o, x in zip(s.opts, sd)]
 
 
 def muon_groups(model, lr, wd):

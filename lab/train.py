@@ -63,7 +63,25 @@ def evaluate(n=40):
 
 rng = np.random.default_rng(run["seed"]); curve = []; t0 = time.time(); diverged = False
 torch.cuda.reset_peak_memory_stats()
-for s in range(run["steps"]):
+# Pause/resume: touch results/PAUSE -> saves checkpoint and exits 3; next launch resumes from it
+CK = ROOT / f"results/ckpt/{name}_s{run['seed']}.pt"; PAUSE = ROOT / "results/PAUSE"; start = 0
+if CK.exists():
+    ck = torch.load(CK, weights_only=False)
+    model.load_state_dict(ck["model"]); opt.load_state_dict(ck["opt"]); rng.bit_generator.state = ck["rng"]
+    start, curve, t0 = ck["step"], ck["curve"], time.time() - ck["secs"]
+    print(f"{name} resumed at step {start}", flush=True)
+
+
+def save_ckpt(step):
+    CK.parent.mkdir(parents=True, exist_ok=True); tmp = CK.with_suffix(".tmp")
+    torch.save(dict(model=model.state_dict(), opt=opt.state_dict(), rng=rng.bit_generator.state, step=step,
+                    curve=curve, secs=time.time() - t0), tmp)
+    tmp.replace(CK)
+
+
+for s in range(start, run["steps"]):
+    if s > start and s % 50 == 0 and PAUSE.exists():
+        save_ckpt(s); print(f"{name} paused at step {s}", flush=True); sys.exit(3)
     for g in opt.param_groups: g["lr"] = g["base_lr"] * lr_mult(s)
     for _ in range(run["accum"]):
         x, y = batch(tr, run["bs"], rng)
@@ -83,5 +101,6 @@ res = dict(name=name, overrides=kv, run=run, cfg=asdict(cfg), params=model.n_par
            diverged=diverged, secs=round(time.time() - t0), peak_gb=round(torch.cuda.max_memory_allocated() / 1e9, 2),
            tok_per_s=round(run["steps"] * run["accum"] * run["bs"] * cfg.seq / (time.time() - t0)), curve=curve)
 (ROOT / "results").mkdir(exist_ok=True)
+CK.unlink(missing_ok=True)
 with open(ROOT / "results/runs.jsonl", "a") as f: f.write(json.dumps(res) + "\n")
 print("RESULT", json.dumps({k: res[k] for k in ("name", "params", "val_loss", "bpb", "bits_sent", "secs", "peak_gb", "tok_per_s")}))
