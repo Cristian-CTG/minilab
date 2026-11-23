@@ -6,7 +6,7 @@ from model import Cfg, LM
 
 ROOT = Path(__file__).resolve().parent.parent
 name, kv = sys.argv[1], dict(a.split("=", 1) for a in sys.argv[2:])
-run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512)
+run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512, data="")
 cfg = Cfg()
 for k, v in kv.items():
     tgt = run if k in run else cfg.__dict__
@@ -15,9 +15,12 @@ for k, v in kv.items():
 cfg.seq = run["seq"]
 torch.manual_seed(run["seed"]); np.random.seed(run["seed"])
 dev = "cuda"
-tr = np.memmap(ROOT / "data/train.bin", dtype=np.uint16, mode="r")
-va = np.memmap(ROOT / "data/val.bin", dtype=np.uint16, mode="r")
-vmeta = json.load(open(ROOT / "data/val.json")); BPT = vmeta["bytes"] / vmeta["tokens"]
+pre = run["data"] + "_" if run["data"] else ""  # data=p2_es -> data/p2_es_{train,val}.bin
+tr = np.memmap(ROOT / f"data/{pre}train.bin", dtype=np.uint16, mode="r")
+va = np.memmap(ROOT / f"data/{pre}val.bin", dtype=np.uint16, mode="r")
+vmeta = json.load(open(ROOT / f"data/{pre}val.json")); BPT = vmeta["bytes"] / vmeta["tokens"]
+if "vocab" in vmeta: cfg.vocab = vmeta["vocab"]
+TPS = vmeta["tokens"] / vmeta["sents"] if "sents" in vmeta else None  # tokens per sentence
 
 
 def batch(d, bs, rng):
@@ -76,8 +79,9 @@ for s in range(run["steps"]):
 
 vl, bpb = (float("nan"),) * 2 if diverged else evaluate(100)
 res = dict(name=name, overrides=kv, run=run, cfg=asdict(cfg), params=model.n_params(), val_loss=vl, bpb=bpb,
+           bits_sent=(vl / math.log(2) * TPS) if TPS else None,
            diverged=diverged, secs=round(time.time() - t0), peak_gb=round(torch.cuda.max_memory_allocated() / 1e9, 2),
            tok_per_s=round(run["steps"] * run["accum"] * run["bs"] * cfg.seq / (time.time() - t0)), curve=curve)
 (ROOT / "results").mkdir(exist_ok=True)
 with open(ROOT / "results/runs.jsonl", "a") as f: f.write(json.dumps(res) + "\n")
-print("RESULT", json.dumps({k: res[k] for k in ("name", "params", "val_loss", "bpb", "secs", "peak_gb", "tok_per_s")}))
+print("RESULT", json.dumps({k: res[k] for k in ("name", "params", "val_loss", "bpb", "bits_sent", "secs", "peak_gb", "tok_per_s")}))
