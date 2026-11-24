@@ -56,9 +56,9 @@ class Combo:
     def load_state_dict(s, sd): [o.load_state_dict(x) for o, x in zip(s.opts, sd)]
 
 
-def muon_groups(model, lr, wd):
+def muon_groups(model, lr, wd, lr_muon=0.02):
     emb = {id(model.emb.weight)}
     hid = [p for p in model.parameters() if p.dim() == 2 and id(p) not in emb]
     rest = [p for p in model.parameters() if not (p.dim() == 2 and id(p) not in emb)]
-    return Combo([Muon(hid, lr=0.02, weight_decay=wd),
+    return Combo([Muon(hid, lr=lr_muon, weight_decay=wd),
                   torch.optim.AdamW(rest, lr=lr, betas=(0.9, 0.95), weight_decay=0.0, fused=True)])

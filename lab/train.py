@@ -6,7 +6,7 @@ from model import Cfg, LM
 
 ROOT = Path(__file__).resolve().parent.parent
 name, kv = sys.argv[1], dict(a.split("=", 1) for a in sys.argv[2:])
-run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512, data="")
+run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512, data="", lr_muon=0.02, lr_lion=3e-4, test=False)
 cfg = Cfg()
 for k, v in kv.items():
     tgt = run if k in run else cfg.__dict__
@@ -36,9 +36,9 @@ groups = [{"params": decay, "weight_decay": run["wd"]}, {"params": other, "weigh
 if run["opt"] == "adamw":
     opt = torch.optim.AdamW(groups, lr=run["lr"], betas=(0.9, 0.95), fused=True)
 elif run["opt"] == "lion":
-    from opts import Lion; opt = Lion(groups, lr=run["lr"] / 10)
+    from opts import Lion; opt = Lion(groups, lr=run["lr_lion"])
 elif run["opt"] == "muon":
-    from opts import muon_groups; opt = muon_groups(model, run["lr"], run["wd"])
+    from opts import muon_groups; opt = muon_groups(model, run["lr"], run["wd"], run["lr_muon"])
 else:
     raise SystemExit(f"unknown opt {run['opt']}")
 for g in opt.param_groups: g["base_lr"] = g["lr"]
@@ -51,10 +51,11 @@ def lr_mult(s):
 
 
 @torch.no_grad()
-def evaluate(n=40):
+def evaluate(n=40, d=None):
+    d = va if d is None else d
     model.eval(); rng = np.random.default_rng(1234); tot = 0.0
     for _ in range(n):
-        x, y = batch(va, 16, rng)
+        x, y = batch(d, 16, rng)
         with torch.autocast("cuda", torch.bfloat16):
             tot += F.cross_entropy(model(x).float().view(-1, cfg.vocab), y.reshape(-1)).item()
     model.train(); l = tot / n
@@ -96,9 +97,13 @@ for s in range(start, run["steps"]):
         print(f"{name} step {s+1} val {vl:.4f} bpb {bpb:.4f} {time.time()-t0:.0f}s", flush=True)
 
 vl, bpb = (float("nan"),) * 2 if diverged else evaluate(100)
+test_bpb = None
+if run["test"] and not diverged:  # held-out test set: only for final champions, never for decisions
+    te = np.memmap(ROOT / "data/test.bin", dtype=np.uint16, mode="r"); tm = json.load(open(ROOT / "data/test.json"))
+    test_bpb = evaluate(200, te)[0] / math.log(2) / (tm["bytes"] / tm["tokens"])
 res = dict(name=name, overrides=kv, run=run, cfg=asdict(cfg), params=model.n_params(), val_loss=vl, bpb=bpb,
            bits_sent=(vl / math.log(2) * TPS) if TPS else None,
-           diverged=diverged, secs=round(time.time() - t0), peak_gb=round(torch.cuda.max_memory_allocated() / 1e9, 2),
+           test_bpb=test_bpb, diverged=diverged, secs=round(time.time() - t0), peak_gb=round(torch.cuda.max_memory_allocated() / 1e9, 2),
            tok_per_s=round(run["steps"] * run["accum"] * run["bs"] * cfg.seq / (time.time() - t0)), curve=curve)
 (ROOT / "results").mkdir(exist_ok=True)
 CK.unlink(missing_ok=True)

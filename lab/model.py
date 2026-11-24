@@ -19,6 +19,7 @@ class Cfg:
     pos: str = "rope"              # rope | nope
     rope_theta: float = 1e6
     tie: bool = True
+    dyt_a0: float = 0.5
 
 
 class RMSNorm(nn.Module):
@@ -35,7 +36,7 @@ class DyT(nn.Module):  # Dynamic Tanh (Zhu et al. 2025): norm-free replacement
         return s.w * torch.tanh(s.a * x) + s.b
 
 
-def Norm(c, d): return DyT(d) if c.norm == "dyt" else RMSNorm(d)
+def Norm(c, d): return DyT(d, c.dyt_a0) if c.norm == "dyt" else RMSNorm(d)
 
 
 def rope_tables(hd, n, theta):
