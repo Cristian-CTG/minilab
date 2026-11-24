@@ -1,0 +1,18 @@
+adamw-lr1e-3 lr=1e-3 seed=0 exit=0 RESULT {"name": "adamw-lr1e-3", "params": 13227648, "val_loss": 3.0149400281906127, "bpb": 1.2224660918467094, "bits_sent": null, "secs": 43
+adamw-lr2e-3 lr=2e-3 seed=0 exit=0 RESULT {"name": "adamw-lr2e-3", "params": 13227648, "val_loss": 3.044499304294586, "bpb": 1.2344514754360234, "bits_sent": null, "secs": 451
+adamw-lr6e-3 lr=6e-3 seed=0 exit=0 RESULT {"name": "adamw-lr6e-3", "params": 13227648, "val_loss": 3.1431552600860595, "bpb": 1.2744534521208413, "bits_sent": null, "secs": 43
+muon-lr0.005 opt=muon lr_muon=0.005 seed=0 exit=0 RESULT {"name": "muon-lr0.005", "params": 13227648, "val_loss": 2.754165828227997, "bpb": 1.1167301189577001, "bits_sent": null, "secs": 453
+muon-lr0.01 opt=muon lr_muon=0.01 seed=0 exit=0 RESULT {"name": "muon-lr0.01", "params": 13227648, "val_loss": 2.718371238708496, "bpb": 1.102216506232401, "bits_sent": null, "secs": 451, 
+muon-lr0.04 opt=muon lr_muon=0.04 seed=0 exit=0 RESULT {"name": "muon-lr0.04", "params": 13227648, "val_loss": 2.7319903326034547, "bpb": 1.1077386328195276, "bits_sent": null, "secs": 449
+adamw-lr1e-3 lr=1e-3 seed=1 exit=0 RESULT {"name": "adamw-lr1e-3", "params": 13227648, "val_loss": 3.015567111968994, "bpb": 1.2227203551649346, "bits_sent": null, "secs": 422
+adamw-lr2e-3 lr=2e-3 seed=1 exit=0 RESULT {"name": "adamw-lr2e-3", "params": 13227648, "val_loss": 3.025331871509552, "bpb": 1.2266796668997464, "bits_sent": null, "secs": 414
+adamw-lr6e-3 lr=6e-3 seed=1 exit=0 RESULT {"name": "adamw-lr6e-3", "params": 13227648, "val_loss": 3.1990994024276733, "bpb": 1.2971370930591692, "bits_sent": null, "secs": 38
+muon-lr0.005 opt=muon lr_muon=0.005 seed=1 exit=0 RESULT {"name": "muon-lr0.005", "params": 13227648, "val_loss": 2.747321240901947, "bpb": 1.1139548478609147, "bits_sent": null, "secs": 438
+muon-lr0.01 opt=muon lr_muon=0.01 seed=1 exit=0 RESULT {"name": "muon-lr0.01", "params": 13227648, "val_loss": 2.7128203082084656, "bpb": 1.099965773464573, "bits_sent": null, "secs": 444,
+muon-lr0.04 opt=muon lr_muon=0.04 seed=1 exit=0 RESULT {"name": "muon-lr0.04", "params": 13227648, "val_loss": 2.743346371650696, "bpb": 1.112343159789595, "bits_sent": null, "secs": 429, 
+lion-lr3e-5 opt=lion lr_lion=3e-5 seed=0 exit=0 RESULT {"name": "lion-lr3e-5", "params": 13227648, "val_loss": 5.7557510662078855, "bpb": 2.3337812512882383, "bits_sent": null, "secs": 390
+lion-lr1e-4 opt=lion lr_lion=1e-4 seed=0 exit=0 RESULT {"name": "lion-lr1e-4", "params": 13227648, "val_loss": 5.088862180709839, "bpb": 2.0633781779508, "bits_sent": null, "secs": 390, "p
+lion-lr1e-3 opt=lion lr_lion=1e-3 seed=0 exit=0 RESULT {"name": "lion-lr1e-3", "params": 13227648, "val_loss": 4.829755582809448, "bpb": 1.958318366762091, "bits_sent": null, "secs": 390, 
+dyt-a1 norm=dyt dyt_a0=1.0 seed=0 exit=0 RESULT {"name": "dyt-a1", "params": 13232653, "val_loss": 7.2262255859375, "bpb": 2.930013754252101, "bits_sent": null, "secs": 360, "peak_g
+dyt-a2 norm=dyt dyt_a0=2.0 seed=0 exit=0 RESULT {"name": "dyt-a2", "params": 13232653, "val_loss": 7.2266184425354005, "bpb": 2.9301730456029746, "bits_sent": null, "secs": 371, "pe
+dyt-lr1e-3 norm=dyt lr=1e-3 seed=0 exit=0 RESULT {"name": "dyt-lr1e-3", "params": 13232653, "val_loss": 7.227332196235657, "bpb": 2.930462450927238, "bits_sent": null, "secs": 359, "
