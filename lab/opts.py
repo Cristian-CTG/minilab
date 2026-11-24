@@ -20,9 +20,12 @@ class Lion(torch.optim.Optimizer):
                 m.mul_(b2).add_(p.grad, alpha=1 - b2)
 
 
+NS_DTYPE = torch.bfloat16  # train.py sets float32 when amp=fp16
+
+
 def newton_schulz(G, steps=5):
     a, b, c = 3.4445, -4.7750, 2.0315
-    X = G.bfloat16(); X = X / (X.norm() + 1e-7)
+    X = G.to(NS_DTYPE); X = X / (X.norm() + 1e-7)
     tr = X.size(0) > X.size(1)
     if tr: X = X.T
     for _ in range(steps):

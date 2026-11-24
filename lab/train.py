@@ -6,7 +6,7 @@ from model import Cfg, LM
 
 ROOT = Path(__file__).resolve().parent.parent
 name, kv = sys.argv[1], dict(a.split("=", 1) for a in sys.argv[2:])
-run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512, data="", lr_muon=0.02, lr_lion=3e-4, test=False, zloss=0.0, mtp_w=0.3)
+run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512, data="", lr_muon=0.02, lr_lion=3e-4, test=False, zloss=0.0, mtp_w=0.3, amp="bf16", ckpt_every=0)
 cfg = Cfg()
 for k, v in kv.items():
     tgt = run if k in run else cfg.__dict__
@@ -15,6 +15,9 @@ for k, v in kv.items():
 cfg.seq = run["seq"]
 torch.manual_seed(run["seed"]); np.random.seed(run["seed"])
 dev = "cuda"
+AMP = torch.float16 if run["amp"] == "fp16" else torch.bfloat16  # fp16 for GPUs without bf16 (Colab T4)
+scaler = torch.amp.GradScaler("cuda", enabled=run["amp"] == "fp16")
+if run["amp"] == "fp16": import opts; opts.NS_DTYPE = torch.float32
 pre = run["data"] + "_" if run["data"] else ""  # data=p2_es -> data/p2_es_{train,val}.bin
 tr = np.memmap(ROOT / f"data/{pre}train.bin", dtype=np.uint16, mode="r")
 va = np.memmap(ROOT / f"data/{pre}val.bin", dtype=np.uint16, mode="r")
@@ -56,7 +59,7 @@ def evaluate(n=40, d=None):
     model.eval(); rng = np.random.default_rng(1234); tot = 0.0
     for _ in range(n):
         x, y = batch(d, 16, rng)
-        with torch.autocast("cuda", torch.bfloat16):
+        with torch.autocast("cuda", AMP):
             tot += F.cross_entropy(model(x).float().view(-1, cfg.vocab), y.reshape(-1)).item()
     model.train(); l = tot / n
     return l, l / math.log(2) / BPT  # loss (nats/token), bits per byte
@@ -83,17 +86,21 @@ def save_ckpt(step):
 for s in range(start, run["steps"]):
     if s > start and s % 50 == 0 and PAUSE.exists():
         save_ckpt(s); print(f"{name} paused at step {s}", flush=True); sys.exit(3)
+    if run["ckpt_every"] and s > start and s % run["ckpt_every"] == 0: save_ckpt(s)  # survive abrupt disconnects
     for g in opt.param_groups: g["lr"] = g["base_lr"] * lr_mult(s)
     for _ in range(run["accum"]):
         x, y = batch(tr, run["bs"], rng)
-        with torch.autocast("cuda", torch.bfloat16):
+        with torch.autocast("cuda", AMP):
             out = model(x, aux=True); lg = (out[0] if cfg.mtp else out).float()
             loss = full = F.cross_entropy(lg.view(-1, cfg.vocab), y.reshape(-1))
             if run["zloss"]: full = full + run["zloss"] * lg.logsumexp(-1).pow(2).mean()  # keeps log Z near 0
             if cfg.mtp: full = full + run["mtp_w"] * F.cross_entropy(out[1][:, :-1].float().reshape(-1, cfg.vocab), y[:, 1:].reshape(-1))
-        (full / run["accum"]).backward()
+        scaler.scale(full / run["accum"]).backward()
+    olist = getattr(opt, "opts", [opt])
+    for o in olist: scaler.unscale_(o)
     torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
-    opt.step(); opt.zero_grad(set_to_none=True)
+    for o in olist: scaler.step(o)
+    scaler.update(); opt.zero_grad(set_to_none=True)
     if not math.isfinite(loss.item()): diverged = True; break
     if (s + 1) % run["eval_every"] == 0 or s + 1 == run["steps"]:
         vl, bpb = evaluate(); curve.append((s + 1, round(vl, 4)))
@@ -104,7 +111,7 @@ test_bpb = None
 if run["test"] and not diverged:  # held-out test set: only for final champions, never for decisions
     te = np.memmap(ROOT / "data/test.bin", dtype=np.uint16, mode="r"); tm = json.load(open(ROOT / "data/test.json"))
     test_bpb = evaluate(200, te)[0] / math.log(2) / (tm["bytes"] / tm["tokens"])
-res = dict(name=name, overrides=kv, run=run, cfg=asdict(cfg), params=model.n_params(), val_loss=vl, bpb=bpb,
+res = dict(name=name, machine=torch.cuda.get_device_name(0), overrides=kv, run=run, cfg=asdict(cfg), params=model.n_params(), val_loss=vl, bpb=bpb,
            bits_sent=(vl / math.log(2) * TPS) if TPS else None,
            test_bpb=test_bpb, diverged=diverged, secs=round(time.time() - t0), peak_gb=round(torch.cuda.max_memory_allocated() / 1e9, 2),
            tok_per_s=round(run["steps"] * run["accum"] * run["bs"] * cfg.seq / (time.time() - t0)), curve=curve)
