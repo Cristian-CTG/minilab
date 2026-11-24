@@ -6,7 +6,7 @@ from model import Cfg, LM
 
 ROOT = Path(__file__).resolve().parent.parent
 name, kv = sys.argv[1], dict(a.split("=", 1) for a in sys.argv[2:])
-run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512, data="", lr_muon=0.02, lr_lion=3e-4, test=False)
+run = dict(seed=0, steps=1500, bs=16, accum=2, lr=3e-3, warmup=100, opt="adamw", wd=0.1, eval_every=250, seq=512, data="", lr_muon=0.02, lr_lion=3e-4, test=False, zloss=0.0, mtp_w=0.3)
 cfg = Cfg()
 for k, v in kv.items():
     tgt = run if k in run else cfg.__dict__
@@ -87,8 +87,11 @@ for s in range(start, run["steps"]):
     for _ in range(run["accum"]):
         x, y = batch(tr, run["bs"], rng)
         with torch.autocast("cuda", torch.bfloat16):
-            loss = F.cross_entropy(model(x).float().view(-1, cfg.vocab), y.reshape(-1)) / run["accum"]
-        loss.backward()
+            out = model(x, aux=True); lg = (out[0] if cfg.mtp else out).float()
+            loss = full = F.cross_entropy(lg.view(-1, cfg.vocab), y.reshape(-1))
+            if run["zloss"]: full = full + run["zloss"] * lg.logsumexp(-1).pow(2).mean()  # keeps log Z near 0
+            if cfg.mtp: full = full + run["mtp_w"] * F.cross_entropy(out[1][:, :-1].float().reshape(-1, cfg.vocab), y[:, 1:].reshape(-1))
+        (full / run["accum"]).backward()
     torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
     opt.step(); opt.zero_grad(set_to_none=True)
     if not math.isfinite(loss.item()): diverged = True; break

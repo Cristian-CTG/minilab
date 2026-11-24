@@ -12,7 +12,7 @@ class Cfg:
     kv_heads: int = 2
     seq: int = 512
     ffn_mult: float = math.pi      # MiniMind uses d*pi rounded to 64
-    attn: str = "softmax"          # softmax | sigmoid | softmax_learned_temp
+    attn: str = "softmax"          # softmax | sigmoid | softmax_learned_temp | diff
     qk_norm: bool = True
     norm: str = "rms"              # rms | dyt
     act: str = "swiglu"            # swiglu | geglu | relu2
@@ -20,6 +20,7 @@ class Cfg:
     rope_theta: float = 1e6
     tie: bool = True
     dyt_a0: float = 0.5
+    mtp: bool = False              # extra head predicting token t+2 (training-only auxiliary)
 
 
 class RMSNorm(nn.Module):
@@ -60,6 +61,9 @@ class Attention(nn.Module):
         s.o = nn.Linear(c.heads * s.hd, c.d, bias=False)
         if c.qk_norm: s.qn, s.kn = RMSNorm(s.hd), RMSNorm(s.hd)
         if c.attn == "softmax_learned_temp": s.logt = nn.Parameter(torch.zeros(c.heads, 1, 1))
+        if c.attn == "diff":  # Differential attention (Ye et al. 2024), simplified: heads paired, learned lambda per pair
+            assert c.heads % 2 == 0
+            s.lam = nn.Parameter(torch.full((c.heads // 2, 1, 1), 0.5)); s.gn = RMSNorm(2 * s.hd)
 
     def forward(s, x, cos, sin):
         B, T, _ = x.shape; c = s.c
@@ -72,6 +76,11 @@ class Attention(nn.Module):
         k, v = k.repeat_interleave(rep, 1), v.repeat_interleave(rep, 1)
         if c.attn == "softmax":
             y = F.scaled_dot_product_attention(q, k, v, is_causal=True)
+        elif c.attn == "diff":  # (A1 - lam*A2) @ V, exact via two fused calls since it is linear in the maps
+            vv = torch.cat([v[:, 0::2], v[:, 1::2]], -1)
+            y = F.scaled_dot_product_attention(q[:, 0::2], k[:, 0::2], vv, is_causal=True) \
+                - s.lam.type_as(vv) * F.scaled_dot_product_attention(q[:, 1::2], k[:, 1::2], vv, is_causal=True)
+            y = s.gn(y) * 0.5
         else:
             sc = (q @ k.transpose(-2, -1)).float() / math.sqrt(s.hd)
             mask = torch.ones(T, T, dtype=torch.bool, device=x.device).tril()
@@ -118,6 +127,7 @@ class LM(nn.Module):
         s.norm = Norm(c, c.d)
         s.head = nn.Linear(c.d, c.vocab, bias=False)
         if c.tie: s.head.weight = s.emb.weight
+        if c.mtp: s.mtp_proj = nn.Linear(c.d, c.d, bias=False)
         cos, sin = rope_tables(c.d // c.heads, c.seq, c.rope_theta)
         s.register_buffer("cos", cos, persistent=False); s.register_buffer("sin", sin, persistent=False)
         s.apply(s._init)
@@ -125,12 +135,14 @@ class LM(nn.Module):
     def _init(s, m):
         if isinstance(m, (nn.Linear, nn.Embedding)): nn.init.normal_(m.weight, std=0.02)
 
-    def forward(s, idx):
+    def forward(s, idx, aux=False):
         T = idx.shape[1]
         x = s.emb(idx)
         cos, sin = s.cos[:T], s.sin[:T]
         for b in s.blocks: x = b(x, cos, sin)
-        return s.head(s.norm(x))
+        h = s.norm(x)
+        if aux and s.c.mtp: return s.head(h), s.head(s.mtp_proj(h))  # logits for t+1 and t+2
+        return s.head(h)
 
     def n_params(s):
         return sum(p.numel() for p in s.parameters())

@@ -57,7 +57,7 @@ class Combo:
 
 
 def muon_groups(model, lr, wd, lr_muon=0.02):
-    emb = {id(model.emb.weight)}
+    emb = {id(model.emb.weight), id(model.head.weight)}  # embeddings and output head stay on AdamW
     hid = [p for p in model.parameters() if p.dim() == 2 and id(p) not in emb]
     rest = [p for p in model.parameters() if not (p.dim() == 2 and id(p) not in emb)]
     return Combo([Muon(hid, lr=lr_muon, weight_decay=wd),
