@@ -1,0 +1,23 @@
+muon-29M d=512 layers=8 heads=8 opt=muon seed=0 exit=0 RESULT {"name": "muon-29M", "params": 28976640, "val_loss": 2.965164051055908, "bpb": 1.2022834534967746, "bits_sent": null, "secs": 989, "p
+base-29M d=512 layers=8 heads=8 seed=1 exit=0 RESULT {"name": "base-29M", "params": 28976640, "val_loss": 3.13709504365921, "bpb": 1.2719962194655297, "bits_sent": null, "secs": 807, "pe
+muon-29M d=512 layers=8 heads=8 opt=muon seed=1 exit=0 RESULT {"name": "muon-29M", "params": 28976640, "val_loss": 2.879024453163147, "bpb": 1.1673564776350334, "bits_sent": null, "secs": 925, "p
+base-62M d=768 layers=8 heads=12 kv_heads=4 seed=0 exit=0 RESULT {"name": "base-62M", "params": 62338816, "val_loss": 2.829658341407776, "bpb": 1.1473400271773195, "bits_sent": null, "secs": 1343, "
+muon-62M d=768 layers=8 heads=12 kv_heads=4 opt=muon seed=0 exit=0 RESULT {"name": "muon-62M", "params": 62338816, "val_loss": 2.812097198963165, "bpb": 1.1402195203108825, "bits_sent": null, "secs": 1485, "
+base-62M d=768 layers=8 heads=12 kv_heads=4 seed=1 exit=0 RESULT {"name": "base-62M", "params": 62338816, "val_loss": 2.8779872345924375, "bpb": 1.1669359171858469, "bits_sent": null, "secs": 1453, 
+muon-62M d=768 layers=8 heads=12 kv_heads=4 opt=muon seed=1 exit=0 RESULT {"name": "muon-62M", "params": 62338816, "val_loss": 2.804438264369965, "bpb": 1.1371140562710296, "bits_sent": null, "secs": 1501, "
+lang-es data=p2_es opt=muon seed=0 exit=0 RESULT {"name": "lang-es", "params": 13227648, "val_loss": 3.494375400543213, "bpb": 1.4485854380797838, "bits_sent": 82.71374565254295, "se
+lang-en data=p2_en opt=muon seed=0 exit=0 RESULT {"name": "lang-en", "params": 13227648, "val_loss": 3.642677731513977, "bpb": 1.5441659054232697, "bits_sent": 81.90693476038226, "se
+lang-es_norm data=p2_es_norm opt=muon seed=0 exit=0 RESULT {"name": "lang-es_norm", "params": 13227648, "val_loss": 3.9937927103042603, "bpb": 1.43551190750297, "bits_sent": 76.53336034058252,
+lang-bytes data=p2_bytes opt=muon seed=0 exit=0 RESULT {"name": "lang-bytes", "params": 10868736, "val_loss": 1.0824762344360352, "bpb": 1.589033221605927, "bits_sent": 90.7332672759579, "
+lang-es data=p2_es opt=muon seed=1 exit=0 RESULT {"name": "lang-es", "params": 13227648, "val_loss": 3.4919001293182372, "bpb": 1.4475593199783228, "bits_sent": 82.65515465098889, "s
+lang-en data=p2_en opt=muon seed=1 exit=0 RESULT {"name": "lang-en", "params": 13227648, "val_loss": 3.6414049434661866, "bpb": 1.54362635840509, "bits_sent": 81.87831565782146, "sec
+lang-es_norm data=p2_es_norm opt=muon seed=1 exit=0 RESULT {"name": "lang-es_norm", "params": 13227648, "val_loss": 3.986247959136963, "bpb": 1.4328000541531807, "bits_sent": 76.38877968714073
+lang-bytes data=p2_bytes opt=muon seed=1 exit=0 RESULT {"name": "lang-bytes", "params": 10868736, "val_loss": 1.0823490881919862, "bpb": 1.5888465758400718, "bits_sent": 90.72260986494281,
+reason-direct mode=direct seed=0 exit=0 RESULT {"name": "reason-direct", "params": 888320, "acc": 0.4375, "secs": 117}
+reason-cot mode=cot seed=0 exit=0 RESULT {"name": "reason-cot", "params": 888320, "acc": 1.0, "secs": 119}
+reason-pause mode=pause seed=0 exit=0 RESULT {"name": "reason-pause", "params": 888320, "acc": 0.4615, "secs": 113}
+reason-latent mode=latent seed=0 exit=0 RESULT {"name": "reason-latent", "params": 888320, "acc": 0.461, "secs": 431}
+reason-direct mode=direct seed=1 exit=0 RESULT {"name": "reason-direct", "params": 888320, "acc": 0.2405, "secs": 67}
+reason-cot mode=cot seed=1 exit=0 RESULT {"name": "reason-cot", "params": 888320, "acc": 0.9995, "secs": 92}
+reason-pause mode=pause seed=1 exit=0 RESULT {"name": "reason-pause", "params": 888320, "acc": 0.302, "secs": 83}
+reason-latent mode=latent seed=1 exit=0 RESULT {"name": "reason-latent", "params": 888320, "acc": 0.39, "secs": 361}
